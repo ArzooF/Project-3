@@ -1,8 +1,0 @@
-To run the flask http://127.0.0.1:5000/api/v1.0/us_social_media
-
-/api/v1.0/us_social_media
-/api/v1.0/google_trends
-/plot
-
- cd /Users/NP/Documents/Project-3/
-python app.py
