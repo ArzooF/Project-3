@@ -1,9 +1,0 @@
-
-cd /Users/NP/Documents/Project-3/Resources/Analysis
-export FLASK_APP=Project3_Group_Flaskflask_APP.py
-flask run --port=5002
-
-US Social Media Data: http://localhost:5002/api/us_social_media
-Google Trends Data: http://localhost:5002/api/google_trends
-Social Media Data: http://localhost:5002/api/social_media
-Images: http://localhost:5002/images
