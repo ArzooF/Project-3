@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Multi-Trace</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    #plot {
+      width: 100%;
+      height: 600px;
+    }
+    #chart-select {
+      margin: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Financial results of Meta's two reportable segments: Family of Apps (FoA) and Reality Labs (RL). (FoA) includes Facebook, Instagram, Messenger, WhatsApp, and other services. (RL) includes our augmented and virtual reality, related consumer hardware, software, and content.</h1>
+  
+  <div id="chart-select">
+    <label for="chartType">Select Chart Type: </label>
+    <select id="chartType">
+      <option value="bar">Grouped Bar Chart</option>
+      <option value="scatter">Scatter Plot</option>
+    </select>
+  </div>
+  
+  <div id="plot"></div>
+  
+  <script src="plots.js"></script>
+</body>
+</html>
