@@ -1,3 +1,112 @@
+SOCIAL MEDIA TRENDS AND USAGE
+## GROUP MEMBERS
+Arzoo Fatima, Natalia Perlaza, Derrick Smith, Khatia Khokhiashvili, Key Caughey
+## DESCRIPTION
+In this project we took the Data Visualization Track.
+This is a look at social media trends, usage, voltility, market value, and competition comparisons globally by using 2 datasets stored in an SQL database we analyzed the correlation
+across the platforms amonst other data csv files from various sources. We explored the impact of new social media on existing ones, as well as
+examing the financial metrics of top performing platforms. We studied social media user numbers over time and mean values across platforms. We assessed market volatility of social media platforms and conducted a comparitive analysis of WhatsApp/Messenger and Pinterest. Investigated how social media platforms respond to global events and analyzed stock performance of Meta and Pinterest.The analysis covers a fifteen year period 2009 to 2024 and by using the charts,
+graphs and https://drive.google.com/drive/folders/1S9ThCtr4_Pll1DtvuDj2QVz3NmFmIgfs?usp=drive_link ,shows how extensively social media has become embedded in our society.
+ These insights are aimed to guide decisions on promotional strategies and investments in
+ diverese sectors, identify risks asssociated with social media, emphasizing potential misuse and explotation. Developed SQL database, notebook, and webpage for showcasing data visualizations. Built Flask backend with interactive api routes to serve JavaScript generated plots based on filtered data.
+## ETHICALLY
+Such an immense influence and usage also has great potential for large scale
+abuse on social influence or economics. By using this kind of data, agencies
+looking to monitor potential exploitation can watch for possible abuses ,either
+socially or economically.
+## References
+- US Social Media Data: [Link to source]
+- Google Trends Data: [Google Trends](https://trends.google.com/trends/)
+- Social Media Data: [Link to source]
+- External Code: [Link to any external code used]
+- Kaggle Dataset: [Social Media Popularity 2009-2023 by Michau96](https://www.kaggle.com/datasets/michau96/social-media-popularity-2009-2023)
+  Yahoo finance ,matplotlib, pandas
+  Meta Finance https://investor.fb.com/financials/default.aspx
+kaggle.comkaggle.com
+Social media popularity (2009 - 2023)
+Worldwide in last 15 years
+investor.fb.cominvestor.fb.com
+Meta - Financials (10 kB)
+
+Technical Aspects:
+
+from sqlalchemy import create_engine
+import pandas as pd
+
+# Create a SQLAlchemy engine
+engine = create_engine('sqlite:///social_media_data.db')
+
+# Define the file paths
+file_path1 = "/Users/NP/Documents/Project-3/Resources/Data/us_social_media.csv"
+file_path2 = "/Users/NP/Documents/Project-3/Resources/Data/social_media-US-monthly-200904-202312.csv"
+file_path3 = "/Users/NP/Documents/Project-3/Resources/Data/google_trends_social_media_data.csv"
+
+# Read the CSV files into dataframes
+df1 = pd.read_csv(file_path1)
+df2 = pd.read_csv(file_path2)
+df3 = pd.read_csv(file_path3)
+
+# Rename the 'date' column to 'Date' in the third dataframe
+df3.rename(columns={'date': 'Date'}, inplace=True)
+
+
+# Write the dataframes to SQLite tables
+df1.to_sql('us_social_media', engine, if_exists='replace', index=False)
+df2.to_sql('monthly_us_social_media', engine, if_exists='replace', index=False)
+df3.to_sql('google_trends', engine, if_exists='replace', index=False)
+
+# Select all records from the 'us_social_media' table
+df1 = pd.read_sql_query("SELECT * FROM us_social_media", engine)
+
+# Select all records from the 'monthly_us_social_media' table
+df2 = pd.read_sql_query("SELECT * FROM monthly_us_social_media", engine)
+
+# Select all records from the 'google_trends' table
+df3 = pd.read_sql_query("SELECT * FROM google_trends", engine)
+
+# Print the first 5 rows of each dataframe
+print(df1.head())
+print(df2.head())
+print(df3.head())
+
+# Create a dropdown menu for the first dataframe (US data)
+d1 = widgets.Dropdown(
+    options=[col for col in df1.columns if col != 'Date'],
+    value=[col for col in df1.columns if col != 'Date'][0],
+    description='US Platform:',
+)
+
+# Create a dropdown menu for the second dataframe (global data)
+d2 = widgets.Dropdown(
+    options=[col for col in df2.columns if col != 'Date'],  # Exclude 'Date' from the options
+    value=[col for col in df2.columns if col != 'Date'][0],  # Set the initial value to the first option that is not 'Date'
+    description='Global Platform:',
+)
+
+
+# Function to plot data
+def plot_data(df1, platform1, df2, platform2):
+    plt.figure(figsize=(10,6))
+    plt.plot(pd.to_datetime(df1['Date']), df1[platform1], label=f'{platform1} (US)')
+    plt.plot(pd.to_datetime(df2['Date']), df2[platform2], label=f'{platform2} (Global)')
+    plt.title(f'{platform1} (US) vs {platform2} (Global) Popularity Over Time')
+    plt.xlabel('Date')
+    plt.ylabel('Popularity')
+    plt.legend(loc='upper right', fontsize='large', title_fontsize='20')
+    plt.show()
+
+# Function to handle changes in the dropdown menus
+def on_change(change):
+    if change['type'] == 'change' and change['name'] == 'value':
+        plot_data(df1, d1.value, df2, d2.value)
+
+d1.observe(on_change)
+d2.observe(on_change)
+
+display(d1)
+display(d2)
+
+Flask App:
 
 cd /Users/NP/Documents/Project-3/Resources/Analysis
 export FLASK_APP=Project3_Group_Flaskflask_APP.py
@@ -7,3 +116,85 @@ US Social Media Data: http://localhost:5002/api/us_social_media
 Google Trends Data: http://localhost:5002/api/google_trends
 Social Media Data: http://localhost:5002/api/social_media
 Images: http://localhost:5002/images
+
+code: 
+from flask import Flask, jsonify, send_from_directory, render_template
+from sqlalchemy import create_engine
+import pandas as pd
+
+app = Flask(__name__, static_folder='/Users/NP/Documents/Project-3/static')
+
+engine = create_engine('sqlite:///social_media_data.db')
+
+@app.route('/api/us_social_media', methods=['GET'])
+def get_us_social_media_data():
+    df = pd.read_sql_query("SELECT * FROM us_social_media", engine)
+    return jsonify(df.to_dict(orient='records'))
+
+@app.route('/api/google_trends', methods=['GET'])
+def get_google_trends_data():
+    df = pd.read_sql_query("SELECT * FROM google_trends", engine)
+    return jsonify(df.to_dict(orient='records'))
+
+@app.route('/api/social_media', methods=['GET'])
+def get_social_media_data():
+    df = pd.read_sql_query("SELECT * FROM monthly_us_social_media", engine)
+    return jsonify(df.to_dict(orient='records'))
+
+@app.route('/images/<path:filename>', methods=['GET'])
+def serve_image(filename):
+    return send_from_directory(app.static_folder, filename)
+
+@app.route('/images')
+def images():
+    return render_template('images.html')
+
+if __name__ == '__main__':
+    app.run(port=5002, debug=True) 
+    HTml Code: 
+    <!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h2>Images</h2>
+    
+
+    <h3 class="theme-title">Stock Prices:</h3>
+    <img src="{{ url_for('static', filename='pinsVmeta.png') }}" alt="Pinterest vs Meta" style="max-width:100%;height:auto;">
+    <img src="{{ url_for('static', filename='Stock_prices_of_Meta_and_Pinterest.png') }}" alt="Stock prices of Meta and Pinterest" style="max-width:100%;height:auto;">
+
+<h3 class="theme-title">Volatility:</h3>
+    <img src="{{ url_for('static', filename='Bubble_Chart_Of_Volatility_for_Social_Media_Platforms.png') }}" alt="Bubble Chart Of Volatility for Social Media Platforms" style="max-width:100%;height:auto;">
+    <img src="{{ url_for('static', filename='Market_Volatility_Of_Social_Media_Platforms.png') }}" alt="Market Volatility Of Social Media Platforms" style="max-width:100%;height:auto;">
+    <img src="{{ url_for('static', filename='Market_Volatility_Social_Media_Platforms.png') }}" alt="Market Volatility Social Media Platforms" style="max-width:100%;height:auto;">
+    <img src="{{ url_for('static', filename='Volatility_of_Social_Media_Platforms_with_Error_Bars.png') }}" alt="Volatility of Social Media Platforms with Error Bars" style="max-width:100%;height:auto;">
+
+<h3 class="theme-title">Profit:</h3>
+    <img src="{{ url_for('static', filename='MeanValues.png') }}" alt="Mean Values" style="max-width:100%;height:auto;">
+    <img src="{{ url_for('static', filename='RevnueOperatingProfit.png') }}" alt="Revenue Operating Profit" style="max-width:100%;height:auto;">
+    <img src="{{ url_for('static', filename='SocialMediaUsersInMillions.png') }}" alt="Social Media Users In Millions" style="max-width:100%;height:auto;">
+
+<h3 class="theme-title">Correlation:</h3>
+    <img src="{{ url_for('static', filename='HeatmapGlobal.png') }}" alt="Heatmap Global" style="max-width:100%;height:auto;">
+    <img src="{{ url_for('static', filename='Impact_of_new_platforms_on_existing_platforms_global.png') }}" alt="Impact of new platforms on existing platforms global" style="max-width:100%;height:auto;">
+    <img src="{{ url_for('static', filename='Impact_US.png') }}" alt="Impact US" style="max-width:100%;height:auto;">
+    <img src="{{ url_for('static', filename='US Heatmap (1).jpg') }}" alt="US Heatmap" style="max-width:100%;height:auto;">
+
+<h3 class="theme-title">Popularity:</h3>
+    <img src="{{ url_for('static', filename='PinterestUSFacebookGlobal.png') }}" alt="Pinterest US vs Facebook Global" style="max-width:100%;height:auto;">
+    <img src="{{ url_for('static', filename='FacebokUSFeacebookGlobal.png') }}" alt="Facebook US vs Facebook Global" style="max-width:100%;height:auto;">
+    <img src="{{ url_for('static', filename='FacebookUSvInstagramgloabl.png') }}" alt="Facebook US vs Instagram Global" style="max-width:100%;height:auto;">
+    <img src="{{ url_for('static', filename='FacebookUSvsLinkedlnGlobal.png') }}" alt="Facebook US vs LinkedIn Global" style="max-width:100%;height:auto;">
+    <img src="{{ url_for('static', filename='LinkedlnUSvGOOgleGlobal.png') }}" alt="LinkedIn US vs Google Global" style="max-width:100%;height:auto;">
+    <img src="{{ url_for('static', filename='LinkedlnUSvLinkedlnGlobal.png') }}" alt="LinkedIn US vs LinkedIn Global" style="max-width:100%;height:auto;">
+    <img src="{{ url_for('static', filename='LinkedlnUSvVimeoGlobal.png') }}" alt="LinkedIn US vs Vimeo Global" style="max-width:100%;height:auto;">
+    <img src="{{ url_for('static', filename='PinterestUSvPinterestGLobal.png') }}" alt="Pinterest US vs Pinterest Global" style="max-width:100%;height:auto;">
+    <img src="{{ url_for('static', filename='PinterestVGooglePlus.png') }}" alt="Pinterest vs Google Plus" style="max-width:100%;height:auto;">
+    <img src="{{ url_for('static', filename='TwitterUSvsLInkedlnGlobal.png') }}" alt="Twitter US vs LinkedIn Global" style="max-width:100%;height:auto;">
+    <img src="{{ url_for('static', filename='TwitterUSvsTwitterGlobal.png') }}" alt="Twitter US vs Twitter Global" style="max-width:100%;height:auto;">
+    <img src="{{ url_for('static', filename='YoutubeUSvTwitterGlobal.png') }}" alt="Youtube US vs Twitter Global" style="max-width:100%;height:auto;">
+    <img src="{{ url_for('static', filename='YoutubeUSvYouTubeGlobal.png') }}" alt="Youtube US vs YouTube Global" style="max-width:100%;height:auto;">
+</body>
+</html>
