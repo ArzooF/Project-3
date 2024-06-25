@@ -1,9 +1,36 @@
+# Project 3
+## Comprehensive Analysis of Global and US Social Media Trends: Correlation, Impact, and Strategic Insights Using Interactive Data Visualizations.
+
+## GROUP MEMBERS
+Arzoo Fatima, Natalia Perlaza, Derrick Smith, Khatia Khokhiashvili, Key Caughey
+
+## Data Visualization Track:
+Chose Data Visualization Track and identified two datasets and stored in an SQL database.
+Analyzed global and US social media trends through correlation analysis across platforms.
+Explored the impact of new social media platforms on existing ones, and examined financial metrics of Facebook and Meta.
+Studied growth trends in social media user numbers over time and mean values across platforms.
+Assessed market volatility of social media platforms and conducted a comparative analysis of WhatsApp/Messenger and Pinterest.
+Investigated how social media platforms respond to global events and analyzed stock performance of Meta and Pinterest.
+Insights aimed to guide strategic decisions on promotional strategies and investments in diverse sectors.
+Identified risks associated with social media, emphasizing potential misuse and exploitation.
+Developed SQL database, notebook, and webpage for showcasing data visualizations.
+Implemented user interaction via HTML dropdown menus and JavaScript-powered visualizations.
+Built Flask backend with interactive API routes to serve JavaScript-generated plots based on filtered data.
+
+## Ethical Considerations
+All data used in this project is publicly available and properly cited. Sensitive information has been anonymized to respect user privacy. The visualizations are designed to present data ethically and responsibly.
+
+## References
+- US Social Media Data: Statcounter https://gs.statcounter.com/ 
+- Yahoo Finance
+- Google Trends Data: [Google Trends](https://trends.google.com/trends/)
+- Social Media Data: [Statcounter https://gs.statcounter.com/]
+- Kaggle Dataset: [Social Media Popularity 2009-2023 by Michau96](https://www.kaggle.com/datasets/michau96/social-media-popularity-2009-2023)
 
 cd /Users/NP/Documents/Project-3/Resources/Analysis
 export FLASK_APP=Project3_Group_Flaskflask_APP.py
 flask run --port=5002
-
-US Social Media Data: http://localhost:5002/api/us_social_media
-Google Trends Data: http://localhost:5002/api/google_trends
-Social Media Data: http://localhost:5002/api/social_media
-Images: http://localhost:5002/images
+--US Social Media Data: http://localhost:5002/api/us_social_media
+--Google Trends Data: http://localhost:5002/api/google_trends
+--Social Media Data: http://localhost:5002/api/social_media
+--Images: http://localhost:5002/images
